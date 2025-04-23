@@ -85,11 +85,6 @@ https://github.com/user-attachments/assets/f26d17f0-aaac-4418-9fa2-a4607e1a20f2
 ## License
 This project is licensed under the [MIT License]
 
-
-## Contact
-For inquiries or issues, contact [kajalyadav3107@gmail.com].
-
-
 =======
 # generate-resume
 generate resume
