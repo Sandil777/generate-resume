@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Django Resume Generator
 
 ## Overview
@@ -89,3 +90,7 @@ This project is licensed under the [MIT License]
 For inquiries or issues, contact [kajalyadav3107@gmail.com].
 
 
+=======
+# generate-resume
+generate resume
+>>>>>>> c42160c499bfc24d4a16705e538a673a079cf28c
