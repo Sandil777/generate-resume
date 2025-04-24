@@ -13,6 +13,9 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from django.template import TemplateDoesNotExist
 
+# Укажите путь к wkhtmltopdf
+config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')  # замените на путь вашего wkhtmltopdf
+
 # Главная страница
 def home(request):
     return render(request, 'cvapp/home.html')
@@ -141,7 +144,7 @@ def resume(request, template_id):
         'disable-internal-links': ''
     }
 
-    pdf = pdfkit.from_string(html, False, options)
+    pdf = pdfkit.from_string(html, False, options, configuration=config)  # Указываем конфигурацию
 
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{user_profile.first_name}_resume.pdf"'
@@ -161,7 +164,8 @@ def UserDetail(request, id):
     print("visitor is : ", Visitor)
     print("profile_id of this user :", Visitor.id)
 
-    if account.email == Visitor.email:
+    # Проверка: если это тот же пользователь или администратор
+    if account.email == Visitor.email or account.is_staff:  # Используйте is_staff или другое поле для проверки прав
         return render(request, 'cvapp/Individual-User.html', {'Visitor': Visitor})
     else:
         return render(request, 'cvapp/unauthorized_access.html')
