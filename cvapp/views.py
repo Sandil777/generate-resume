@@ -190,7 +190,4 @@ def delete_form(request, id):
         return redirect('list')
 
     return render(request, 'cvapp/deletecv.html', {'review': review})
-"""
-сделал"""
-"""fbhfe""""""
-""""bhgbijgd""""""
+"cool"
