@@ -192,3 +192,4 @@ def delete_form(request, id):
     return render(request, 'cvapp/deletecv.html', {'review': review})
 """
 сделал"""
+"""fbhfe""""""
