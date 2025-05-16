@@ -5,6 +5,7 @@ import numpy as np
 
 
 def predict(request):
+    # Обработка POST-запроса
     if request.method == 'POST':
         try:
             # Получаем данные из формы
@@ -23,8 +24,10 @@ def predict(request):
 
             # Возвращаем результат на страницу
             return render(request, 'SalaryPredictionApp/predict.html', {'prediction': round(predicted_salary, 2)})
+
         except ValueError:
             # Если введены некорректные данные
-            return HttpResponse("Please enter a valid number.", status=400)
+            return render(request, 'SalaryPredictionApp/predict.html', {'error': 'Please enter a valid number.'})
 
-    return render(request, 'SalaryPredictionApp/predict.html')  # Если запрос GET
+    # Обработка GET-запроса, если пользователь просто открыл страницу
+    return render(request, 'SalaryPredictionApp/predict.html')

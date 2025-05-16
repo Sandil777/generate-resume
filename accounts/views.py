@@ -1,24 +1,23 @@
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterationForm
+from .forms import RegisterationForm, ProfileForm
 from .models import Account, UserProfile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .forms import *
-
-# verification email
+from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
 
-# Create your views here.
+# Логгер для отслеживания ошибок
+logger = logging.getLogger(__name__)
 
-
+# Register view
 def register(request):
     if request.method == "POST":
         form = RegisterationForm(request.POST)
@@ -34,7 +33,7 @@ def register(request):
             user.phone_number = phone_number
             user.save()
 
-            # user activation
+            # User activation email
             current_site = get_current_site(request)
             mail_subject = 'Please activate your account'
             message = render_to_string('accounts/account_verification_email.html', {
@@ -45,49 +44,51 @@ def register(request):
             })
             to_email = email
             send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
 
-            # messages.success(request, 'Thank you for registering with us , We have sent you a verification email to your email address. Please verify it')
-            return redirect('/accounts/login/?command=verification&email='+email)
+            try:
+                send_email.send()  # Отправка email
+            except Exception as e:
+                logger.error(f"Error sending email to {email}: {e}")  # Логируем ошибку
+                messages.error(request, 'There was an error sending the activation email.')
+                return redirect('register')  # Перенаправление при ошибке
 
+            messages.success(request, 'Please verify your email to activate your account.')
+            return redirect('/accounts/login/?command=verification&email=' + email)
     else:
         form = RegisterationForm()
+
     context = {
         'form': form,
     }
     return render(request, 'accounts/register.html', context)
 
 
+# Login view
 def login_user(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        print('email:', email)
-        print('password:', password)
-        user = authenticate(email=email, password=password)
-        print('user:', user)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')
-
         else:
-            messages.error(request, 'Please! Enter correct email and password')
+            messages.error(request, 'Invalid email or password.')
             return redirect('login')
+
     return render(request, 'accounts/login_user.html')
 
 
+# Logout view
 @login_required(login_url='login')
 def logout_user(request):
     logout(request)
-    messages.success(request, 'You are logged out')
+    messages.success(request, 'You have logged out successfully.')
     return redirect('login')
 
 
-def activate(request, uidb64, token):
-    return HttpResponse('Ok')
-
-
+# Account activation view
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -98,23 +99,22 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(
-            request, 'Congratulations! Your account is activated.')
+        messages.success(request, 'Your account has been activated successfully!')
         return redirect('login')
     else:
-        messages.error(request, 'Invalid activation link')
+        messages.error(request, 'Invalid activation link!')
         return redirect('register')
 
 
+# Forgot password view
 def forgotPassword(request):
     if request.method == 'POST':
         email = request.POST['email']
         if Account.objects.filter(email=email).exists():
-            user = Account.objects.get(email__exact=email)
+            user = Account.objects.get(email=email)
 
-            # user activation
             current_site = get_current_site(request)
-            mail_subject = 'Reset your Password'
+            mail_subject = 'Reset your password'
             message = render_to_string('accounts/reset_password_email.html', {
                 'user': user,
                 'domain': current_site,
@@ -123,18 +123,25 @@ def forgotPassword(request):
             })
             to_email = email
             send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
 
-            messages.success(
-                request, 'Password reset email has been sent to your email address.')
+            try:
+                send_email.send()  # Отправка email
+            except Exception as e:
+                logger.error(f"Error sending reset password email to {email}: {e}")
+                messages.error(request, 'There was an error sending the reset password email.')
+                return redirect('forgotPassword')
+
+            messages.success(request, 'Password reset email has been sent to your email address.')
             return redirect('login')
         else:
-            messages.error(request, 'Account does not exist!')
+            messages.error(request, 'Account does not exist with this email address.')
             return redirect('forgotPassword')
+
     return render(request, 'accounts/forgotPassword.html')
 
 
-def reset_password_validate(request,  uidb64, token):
+# Password reset validation view
+def reset_password_validate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
@@ -143,13 +150,14 @@ def reset_password_validate(request,  uidb64, token):
 
     if user is not None and default_token_generator.check_token(user, token):
         request.session['uid'] = uid
-        messages.success(request, 'Please reset your password')
+        messages.success(request, 'Please reset your password.')
         return redirect('resetPassword')
     else:
-        messages.error(request, 'This link has been expired!')
+        messages.error(request, 'This link has expired or is invalid.')
         return redirect('login')
 
 
+# Password reset view
 def resetPassword(request):
     if request.method == 'POST':
         password = request.POST['password']
@@ -160,15 +168,16 @@ def resetPassword(request):
             user = Account.objects.get(pk=uid)
             user.set_password(password)
             user.save()
-            messages.success(request, 'Password reset successful')
+            messages.success(request, 'Your password has been successfully reset!')
             return redirect('login')
         else:
-            messages.error(request, 'Password do not match')
+            messages.error(request, 'Passwords do not match.')
             return redirect('resetPassword')
     else:
         return render(request, 'accounts/resetPassword.html')
 
 
+# Profile view
 @login_required
 def profile_view(request, username=None):
     if username:
@@ -184,6 +193,7 @@ def profile_view(request, username=None):
     return render(request, 'accounts/profile.html', {'profile': profile})
 
 
+# Profile edit view
 @login_required
 def profile_edit_view(request):
     try:
@@ -207,6 +217,7 @@ def profile_edit_view(request):
     return render(request, template, {'form': form})
 
 
+# Profile delete view
 @login_required
 def profile_delete_view(request):
     user = request.user
@@ -214,6 +225,7 @@ def profile_delete_view(request):
     if request.method == 'POST':
         logout(request)
         user.delete()
-        messages.success(request, 'Account deleted')
+        messages.success(request, 'Your account has been deleted successfully.')
         return redirect('home')
+
     return render(request, 'accounts/profile_delete.html')

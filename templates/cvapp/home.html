@@ -5,163 +5,114 @@
     Home Page
 {% endblock %}
 
-
 {% block content %}
 <div class="header-banner">
     <div class="container h-100 d-flex align-items-center justify-content-center">
         <div class="row text-center justify-content-center">
-            <h1 class="text-uppercase text-blue fw-6 lh-17 display-5">create your professional cv in just 5
+            <h1 class="text-uppercase text-blue fw-bold display-5">
+                Create your professional CV in just 5
                 <span class="text-lowercase text-primary">minutes!</span>
             </h1>
             <p class="text-grey fs-4 mt-3 mb-5">Easy to use. Time-saver. Professional.</p>
             <a href="{% url 'select_template' %}">
-            <button class="btn btn-lg text-capitalize btn-primary btn-banner fs-4">let's get started</button>
+                <button class="btn btn-lg btn-primary fs-4">Let's Get Started</button>
             </a>
         </div>
     </div>
 </div>
 
-</header>
-
 <main>
-<section class="steps py-8">
+<section class="steps py-5">
     <div class="container">
-        <div class="row section-title text-center">
+        <div class="row text-center mb-4">
             <div class="col-12">
-                <h2 class="display-6 text-blue fw-bold">Create your perfect Resume with easy steps</h2>
-                <p class="text-grey fs-4 my-4 mx-auto">Effortlessly make a job-worthy resume and cover letter
-                    that gets you hired faster.</p>
+                <h2 class="display-6 fw-bold text-blue">Create your perfect Resume with easy steps</h2>
+                <p class="text-grey fs-4">Effortlessly make a job-worthy resume and cover letter that gets you hired faster.</p>
             </div>
         </div>
 
-        <div class="row steps-list">
-            <div
-                class="steps-item col-lg-6 col-xl-4 text-center text-md-start my-4 d-md-flex align-items-md-center">
-                <div
-                    class="steps-item-icon text-white bg-light-blue d-flex align-items-center justify-content-center mx-auto ms-md-0 me-md-5 me-lg-4">
-                    <i class="fa-solid fa-layer-group fa-2x"></i>
-                </div>
-                <div class="steps-item-text mt-4">
-                    <h3 class="fs-3 fw-4 text-blue">Choose your CV template</h3>
-                    <p class="text-grey fs-18">Pick a template and color of your choice from a variety of
-                        professional templates.</p>
-                </div>
+        <div class="row gy-4">
+            <div class="col-md-4 text-center">
+                <i class="fa fa-layer-group fa-3x text-primary mb-3"></i>
+                <h4 class="fw-bold">Choose your CV template</h4>
+                <p>Pick a template and color of your choice from a variety of professional templates.</p>
             </div>
-
-            <div
-                class="steps-item col-lg-6 col-xl-4 text-center text-md-start my-4 d-md-flex align-items-md-center">
-                <div
-                    class="steps-item-icon text-white bg-light-blue d-flex align-items-center justify-content-center mx-auto ms-md-0 me-md-5 me-lg-4">
-                    <i class="fa-solid fa-file-lines fa-2x"></i>
-                </div>
-                <div class="steps-item-text mt-4">
-                    <h3 class="fs-3 fw-4 text-blue">Place Your Information</h3>
-                    <p class="text-grey fs-18">Keep track of your CV with the help of live preview.</p>
-                </div>
+            <div class="col-md-4 text-center">
+                <i class="fa fa-file-lines fa-3x text-primary mb-3"></i>
+                <h4 class="fw-bold">Place Your Information</h4>
+                <p>Keep track of your CV with the help of live preview.</p>
             </div>
-
-            <div
-                class="steps-item col-lg-6 col-xl-4 text-center text-md-start my-4 d-md-flex align-items-md-center">
-                <div
-                    class="steps-item-icon text-white bg-light-blue d-flex align-items-center justify-content-center mx-auto ms-md-0 me-md-5 me-lg-4">
-                    <i class="fa-solid fa-download fa-2x"></i>
-                </div>
-                <div class="steps-item-text mt-4">
-                    <h3 class="fs-3 fw-4 text-blue">Instantly download your CV</h3>
-                    <p class="text-grey fs-18">Easily download your CV as a PDF and share it via a link.</p>
-                </div>
+            <div class="col-md-4 text-center">
+                <i class="fa fa-download fa-3x text-primary mb-3"></i>
+                <h4 class="fw-bold">Instantly download your CV</h4>
+                <p>Easily download your CV as a PDF and share it via a link.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="templates py-8 bg-secondary">
+<section class="templates py-5 bg-light">
     <div class="container">
-        <div class="row section-title text-center mb-5">
-            <div class="col-12">
-                <h2 class="display-6 text-blue fw-bold">Here are the Best Templates for you</h2>
-                <p class="text-grey fs-4 my-4 mx-auto">A great job application leads to a good interview. An
-                    amazing resume is what makes it all possible.</p>
-            </div>
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold text-blue">Here are the Best Templates for You</h2>
+            <p class="text-grey fs-4">A great job application leads to a good interview. An amazing resume makes it possible.</p>
         </div>
 
-        <div class="row templates-list gy-5 gx-lg-5">
-            <div class="templates-item position-relative col-lg-6">
-                <div class="template-item-img mx-auto me-lg-0 position-relative">
-                    <img src="{% static "assets/images/Basic.jpg" %}" alt="" class="img-fluid">
-                    <a href="#" class="btn btn-lg btn-primary position-absolute choose-template-btn">Select
-                        Template</a>
+        <div class="row g-4 justify-content-center">
+            {% for template in templates %}
+            <div class="col-md-6 col-lg-4 text-center">
+                <div class="card shadow-sm h-100">
+                    {% if template.image %}
+                        <img src="{{ template.image.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ template.name }}">
+                    {% else %}
+                        <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">
+                            No Image Available
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ template.name }}</h5>
+                        <a href="{% url 'select_template' %}" class="btn btn-primary mt-2">Select Template</a>
+                    </div>
                 </div>
             </div>
-
-            <div class="templates-item position-relative col-lg-6">
-                <div class="template-item-img mx-auto ms-lg-0 position-relative">
-                    <img src="{% static "assets/images/College.jpg" %}" alt="" class="img-fluid">
-                    <a href="#" class="btn btn-lg btn-primary position-absolute choose-template-btn">Select
-                        Template</a>
-                </div>
-            </div>
+            {% empty %}
+            <p class="text-center text-muted">No templates available.</p>
+            {% endfor %}
         </div>
     </div>
 </section>
 </main>
 
 <footer class="pt-5">
-<div class="container my-4">
-    <div class="row gy-5 gx-md-5 text-center text-md-start">
-        <div class="col-md-6 col-xl-4">
-            <a class="site-logo text-decoration-none fw-bold fs-2" href="#">
-                <span>
-                    <i class="fa-solid fa-file-invoice"></i>
-                </span>
-                <span class="site-logo-text">Build</span> CV
-            </a>
-            <p class="text-grey fs-18 mt-4">Build CV is a CV builder that helps users like you to create
-                stunning CVs within 4 minutes</p>
-        </div>
-
-        <div class="col-md-6 col-xl-2">
-            <h3 class="text-blue">Build CV</h3>
-            <ul class="list-unstyled mt-4">
-                <li class="my-2">
-                    <a href="#" class="text-decoration-none fs-17 text-dark">Homepage</a>
-                </li>
-                <li class="my-2">
-                    <a href="#" class="text-decoration-none fs-17 text-dark">CV Builder</a>
-                </li>
-                <li class="my-2">
-                </li>
-                <li class="my-2">
-                    <a href="#" class="text-decoration-none fs-17 text-dark">Login</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="col-md-6 col-xl-2">
-            <h3 class="text-blue">Legal</h3>
-            <ul class="list-unstyled mt-4">
-                <li class="my-2">
-                    <a href="#" class="text-decoration-none fs-17 text-dark">Privacy Policy</a>
-                </li>
-                <li class="my-2">
-                    <a href="#" class="text-decoration-none fs-17 text-dark">Use of Terms</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="col-md-6 col-xl-4">
-            <h3 class="text-blue">Help Center</h3>
-            <p class="fs-17 mt-3">Contact: <a href="mailto:support@buildcv.com"
-                    class="text-decoration-none text-blue">support@buildcv.com</a></p>
+    <div class="container">
+        <div class="row text-center text-md-start gy-4">
+            <div class="col-md-6 col-lg-4">
+                <h3 class="fw-bold text-blue">Build CV</h3>
+                <p>Build CV is a CV builder that helps users like you to create stunning CVs within 4 minutes.</p>
+            </div>
+            <div class="col-md-6 col-lg-2">
+                <h5 class="fw-bold text-blue">Build CV</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-dark">Homepage</a></li>
+                    <li><a href="#" class="text-dark">CV Builder</a></li>
+                    <li><a href="#" class="text-dark">Login</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-lg-2">
+                <h5 class="fw-bold text-blue">Legal</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-dark">Privacy Policy</a></li>
+                    <li><a href="#" class="text-dark">Terms of Use</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <h5 class="fw-bold text-blue">Help Center</h5>
+                <p>Contact: <a href="mailto:support@buildcv.com" class="text-primary">support@buildcv.com</a></p>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="container-fluid copyright-text pt-4 pb-3">
-    <p class="text-center fw-3">&copy; 2022 BuildCv. All rights reserved</p>
-</div>
+    <div class="bg-dark text-white text-center py-3 mt-4">
+        <p class="mb-0">&copy; 2025 BuildCV. All rights reserved.</p>
+    </div>
 </footer>
-
-
-
 {% endblock %}
