@@ -1,7 +1,6 @@
 project
-project
 Главный Меню
-![image](https://github.com/user-attachments/assets/f9f00960-0174-4cee-8942-9557bb4713d1
+![image](https://github.com/user-attachments/assets/f9f00960-0174-4cee-8942-9557bb4713d1)
 register
 ![image](https://github.com/user-attachments/assets/68423007-81b8-4c30-ad05-d58545656760)
 login
