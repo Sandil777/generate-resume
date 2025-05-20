@@ -1,5 +1,18 @@
-project
-Главный Меню
+project:Generate Resume
+------
+requirements:
+django==4.2.1
+joblib==1.4.2
+mysqlclient==2.2.0
+numpy==2.1.0
+pdfkit==1.0.0
+Pillow==10.0.0
+python-dateutil==2.8.2
+python-decouple==3.8
+scikit-learn==1.5.1
+scipy==1.14.1
+-------
+home page
 ![image](https://github.com/user-attachments/assets/f9f00960-0174-4cee-8942-9557bb4713d1)
 register
 ![image](https://github.com/user-attachments/assets/68423007-81b8-4c30-ad05-d58545656760)
